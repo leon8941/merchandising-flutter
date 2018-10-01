@@ -28,6 +28,9 @@ class MyHomePageState extends State<MyHomePage>{
     return Scaffold (
       appBar: AppBar(
         title: Text('Random Name Generator'),
+        actions: <Widget>[
+          new IconButton(icon: const Icon(Icons.list),onPressed: _pushSaved),
+        ],
       ),
       body: _buildSuggestions(),
     );
@@ -50,7 +53,7 @@ class MyHomePageState extends State<MyHomePage>{
   }
 
   Widget _buildRow(WordPair pair){
-    final bool alreadySaved = _saved.contains(pair)
+    final bool alreadySaved = _saved.contains(pair);
 
     return ListTile(
       title: Text(
@@ -59,8 +62,53 @@ class MyHomePageState extends State<MyHomePage>{
       ),
       trailing: new Icon(
         alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null
+        color: alreadySaved ? Colors.red : null 
       ),
+      onTap: () {
+        // In Flutter's reactive style framework, calling setState() triggers a call to the build() method 
+        // for the State object, resulting in an update to the UI.
+        setState(() {
+          if(alreadySaved){
+            _saved.remove(pair);
+          }
+          else{
+            _saved.add(pair);
+          }
+        });
+      },
+    );
+  }
+
+  void _pushSaved(){
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context){
+          final Iterable<ListTile> tiles = _saved.map(
+            (WordPair pair) {
+              return new ListTile(
+                title: new Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            }
+          );
+          final List<Widget> divided = ListTile
+            .divideTiles(
+              context: context,
+              tiles: tiles
+            ).toList();
+
+          return new Scaffold(
+            appBar: new AppBar(
+              title: const Text('Saved suggestions'),
+            ),
+            body: new ListView(
+              children: divided
+            ),
+          );
+        }
+      )
     );
   }
 }
