@@ -10,6 +10,9 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: "New List",
       home: MyHomePage(),
+      theme: new ThemeData(
+        primaryColor: Colors.deepPurpleAccent
+      ),
     );
   }
 }
