@@ -8,6 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "New List",
       home: MyHomePage(),
       theme: new ThemeData(
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
 }
  
 class MyHomePage extends StatefulWidget{
+  @override
   MyHomePageState createState() => new MyHomePageState();
 }
 
