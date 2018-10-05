@@ -32,9 +32,14 @@ class MyHomePageState extends State<MyHomePage>{
   Widget build(BuildContext context){
     return Scaffold (
       appBar: AppBar(
-        title: Text('Random Name Generator'),
+        title: Text('Messages'),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.list),onPressed: _pushSaved),
+          new IconButton(
+            icon: const Icon(
+              Icons.add
+            ),
+            onPressed: _newMessages
+          ),
         ],
       ),
       body: _buildSuggestions(),
@@ -65,26 +70,37 @@ class MyHomePageState extends State<MyHomePage>{
         pair.asPascalCase,
         style: _biggerFont,
       ),
-      trailing: new Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null 
+      trailing: new IconButton(
+        icon: new Icon(
+          alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.red : null 
+        ),
+        onPressed: () {
+          setState(() {
+            if(alreadySaved){
+              _saved.remove(pair);
+            }
+            else{
+              _saved.add(pair);
+            }
+          });
+        },
       ),
       onTap: () {
-        // In Flutter's reactive style framework, calling setState() triggers a call to the build() method 
-        // for the State object, resulting in an update to the UI.
-        setState(() {
-          if(alreadySaved){
-            _saved.remove(pair);
-          }
-          else{
-            _saved.add(pair);
-          }
-        });
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => MessageDetails()
+          ),
+        );
       },
+      onLongPress: () {
+        //Can do something else here such as showing a tooltips.
+      },
+      
     );
   }
 
-  void _pushSaved(){
+  void _newMessages(){
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context){
@@ -114,6 +130,29 @@ class MyHomePageState extends State<MyHomePage>{
           );
         }
       )
+    );
+  }
+}
+
+
+class MessageDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Message with A"),
+        centerTitle: true,
+
+      ),
+      body: Center(
+        child: RaisedButton(
+          onPressed: () {
+            // Navigate back to first screen when tapped!
+            Navigator.of(context).pop();
+          },
+          child: Text('Go back!'),
+        ),
+      ),
     );
   }
 }
