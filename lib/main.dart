@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
+import 'messageDetail.dart';
+import 'Message.dart';
 
 void main() => runApp(new MyApp());
 
@@ -24,9 +25,14 @@ class MyHomePage extends StatefulWidget{
 }
 
 class MyHomePageState extends State<MyHomePage>{
-  final _suggestions = <WordPair>[];
+  final _suggestions = List<Message>.generate(
+    20, 
+    (count) => Message(
+      "Message ID $count", 
+      "Sender $count")
+    );
   final _biggerFont = const TextStyle(fontSize: 20.0);
-  final _saved = new Set<WordPair>();
+  final _saved = new Set<String>();
 
   @override
   Widget build(BuildContext context){
@@ -48,26 +54,23 @@ class MyHomePageState extends State<MyHomePage>{
 
   Widget _buildSuggestions(){
     return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: (context,i){
-        if (i.isOdd) return Divider();
-        final index = i ~/ 2;
-        // The syntax "i ~/ 2" divides i by 2 and returns an integer result.
-        // For example: 1, 2, 3, 4, 5 becomes 0, 1, 1, 2, 2.
-        if (index >= _suggestions.length){
-          _suggestions.addAll(generateWordPairs().take(10));
-        }
-        return _buildRow(_suggestions[index]);
+      padding: const EdgeInsets.all(8.0),
+      itemCount: _suggestions.length,
+      itemBuilder: (context, i){
+        return _buildRow(_suggestions[i]);
       },
     );
   }
 
-  Widget _buildRow(WordPair pair){
-    final bool alreadySaved = _saved.contains(pair);
+  Widget _buildRow(Message message){
+    final bool alreadySaved = _saved.contains(message.senderId);
 
     return ListTile(
+      leading: new Icon(
+        Icons.person,
+      ),
       title: Text(
-        pair.asPascalCase,
+        message.senderName,
         style: _biggerFont,
       ),
       trailing: new IconButton(
@@ -78,10 +81,10 @@ class MyHomePageState extends State<MyHomePage>{
         onPressed: () {
           setState(() {
             if(alreadySaved){
-              _saved.remove(pair);
+              _saved.remove(message.senderId);
             }
             else{
-              _saved.add(pair);
+              _saved.add(message.senderId);
             }
           });
         },
@@ -89,7 +92,7 @@ class MyHomePageState extends State<MyHomePage>{
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MessageDetails()
+            builder: (context) => MessageDetails(message: message)
           ),
         );
       },
@@ -105,10 +108,10 @@ class MyHomePageState extends State<MyHomePage>{
       new MaterialPageRoute<void>(
         builder: (BuildContext context){
           final Iterable<ListTile> tiles = _saved.map(
-            (WordPair pair) {
+            (String senderName) {
               return new ListTile(
                 title: new Text(
-                  pair.asPascalCase,
+                  senderName,
                   style: _biggerFont,
                 ),
               );
@@ -134,25 +137,3 @@ class MyHomePageState extends State<MyHomePage>{
   }
 }
 
-
-class MessageDetails extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Message with A"),
-        centerTitle: true,
-
-      ),
-      body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            // Navigate back to first screen when tapped!
-            Navigator.of(context).pop();
-          },
-          child: Text('Go back!'),
-        ),
-      ),
-    );
-  }
-}
