@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'Message.dart';
+import 'User.dart';
 
 class MessageDetails extends StatelessWidget {
-  final Message message;
+  final User user;
 
   MessageDetails(
     {
       Key key, 
-      @required this.message
+      @required this.user
     }
   ) : super(key: key);
 
@@ -15,7 +15,7 @@ class MessageDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Message with ${message.senderName}"),
+        title: Text("Message with ${user.senderName}"),
         centerTitle: true,
       ),
       body: Center(

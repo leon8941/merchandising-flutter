@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'messageDetail.dart';
-import 'Message.dart';
+import 'User.dart';
 
 void main() => runApp(new MyApp());
 
@@ -25,9 +25,9 @@ class MyHomePage extends StatefulWidget{
 }
 
 class MyHomePageState extends State<MyHomePage>{
-  final _suggestions = List<Message>.generate(
+  final _users = List<User>.generate(
     20, 
-    (count) => Message(
+    (count) => User(
       "Message ID $count", 
       "Sender $count")
     );
@@ -55,22 +55,22 @@ class MyHomePageState extends State<MyHomePage>{
   Widget _buildSuggestions(){
     return ListView.builder(
       padding: const EdgeInsets.all(8.0),
-      itemCount: _suggestions.length,
+      itemCount: _users.length,
       itemBuilder: (context, i){
-        return _buildRow(_suggestions[i]);
+        return _buildRow(_users[i]);
       },
     );
   }
 
-  Widget _buildRow(Message message){
-    final bool alreadySaved = _saved.contains(message.senderId);
+  Widget _buildRow(User user){
+    final bool alreadySaved = _saved.contains(user.senderId);
 
     return ListTile(
       leading: new Icon(
         Icons.person,
       ),
       title: Text(
-        message.senderName,
+        user.senderName,
         style: _biggerFont,
       ),
       trailing: new IconButton(
@@ -81,10 +81,10 @@ class MyHomePageState extends State<MyHomePage>{
         onPressed: () {
           setState(() {
             if(alreadySaved){
-              _saved.remove(message.senderId);
+              _saved.remove(user.senderId);
             }
             else{
-              _saved.add(message.senderId);
+              _saved.add(user.senderId);
             }
           });
         },
@@ -92,7 +92,7 @@ class MyHomePageState extends State<MyHomePage>{
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MessageDetails(message: message)
+            builder: (context) => MessageDetails(user: user)
           ),
         );
       },
