@@ -12,7 +12,7 @@ flutter emulators --launch apple_ios_simulator
 ## Useful resources:
 1. Build your custom widget by following the video tutorial [here](https://www.youtube.com/watch?time_continue=26&v=oC7eCgcP0ew).
 2. Scalable app structure in Flutter [here](https://hackernoon.com/scalable-app-structure-in-flutter-dad61a4bc389).
-
+3. [ReactiveX](http://reactivex.io/intro.html) - ReactiveX is a library for composing asynchronous and event-based programs by using observable sequences. The package dedicated for Flutter can be found [here](https://github.com/ReactiveX/rxdart).
 
 ## Additional Flutter Resources:
 - [Documentation](https://docs.flutter.io/)

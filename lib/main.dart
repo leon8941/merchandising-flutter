@@ -92,7 +92,7 @@ class MyHomePageState extends State<MyHomePage>{
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MessageDetails(user: user)
+            builder: (context) => MessageDetails(peerUser: user)
           ),
         );
       },
