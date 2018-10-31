@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>886806939691-6hl22tjkf2f835tag1rocff0g8re20cd.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.886806939691-6hl22tjkf2f835tag1rocff0g8re20cd</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDpWFssMCn68plFlBRfJZCd4ZQfAKWNzv8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>886806939691</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kittyapps.merchandising</string>
+	<key>PROJECT_ID</key>
+	<string>merchandising-24b39</string>
+	<key>STORAGE_BUCKET</key>
+	<string>merchandising-24b39.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:886806939691:ios:bee5eaaaa766c297</string>
+	<key>DATABASE_URL</key>
+	<string>https://merchandising-24b39.firebaseio.com</string>
+</dict>
+</plist>
