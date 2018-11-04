@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 import 'messageDetail.dart';
+import 'login.dart';
 import 'User.dart';
 
 void main() => runApp(new MyApp());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "New List",
-      home: MyHomePage(),
-      theme: new ThemeData(
-        primaryColor: Colors.deepPurpleAccent
-      ),
-    );
-  }
-}
- 
 class MyHomePage extends StatefulWidget{
+  final String currentUserId;
+
+  MyHomePage({Key key, @required this.currentUserId}) : super(key: key);
+
   @override
-  MyHomePageState createState() => new MyHomePageState();
+  MyHomePageState createState() => new MyHomePageState(currentUserId: currentUserId);
 }
 
 class MyHomePageState extends State<MyHomePage>{
+  MyHomePageState({Key key, @required this.currentUserId});
+
+  final String currentUserId;
   final _users = List<User>.generate(
     20, 
     (count) => User(
