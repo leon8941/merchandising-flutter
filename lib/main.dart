@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'messageDetail.dart';
 import 'login.dart';
 import 'User.dart';
+import 'Choice.dart';
+import 'const.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 void main() => runApp(new MyApp());
 
@@ -18,6 +23,43 @@ class MyHomePageState extends State<MyHomePage>{
   MyHomePageState({Key key, @required this.currentUserId});
 
   final String currentUserId;
+  bool isLoading = false;
+  
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+  List<Choice> choices = const <Choice>[
+    const Choice("Setting", Icons.settings, 1),
+    const Choice("Log Out", Icons.exit_to_app, 2), 
+  ];
+
+  Future<bool> onBackPress() {
+    return Future.value(false);
+  }
+
+  Future<Null> handleSignOut() async {
+      this.setState(() {
+        isLoading = true;
+      });
+
+      await FirebaseAuth.instance.signOut();
+      await googleSignIn.disconnect();
+      await googleSignIn.signOut();
+
+      this.setState(() {
+        isLoading = false;
+      });
+
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => MyApp()),
+          (Route<dynamic> route) => false);
+    } 
+
+  void onItemMenuPress(Choice choice){
+    if(choice.id == 2) {
+      handleSignOut();
+    }
+  }
+
   final _users = List<User>.generate(
     20, 
     (count) => User(
@@ -31,14 +73,33 @@ class MyHomePageState extends State<MyHomePage>{
   Widget build(BuildContext context){
     return Scaffold (
       appBar: AppBar(
-        title: Text('Hi ' + this.currentUserId + 'Messages'),
+        title: Text('Messages'),
         actions: <Widget>[
-          new IconButton(
-            icon: const Icon(
-              Icons.add
-            ),
-            onPressed: _newMessages
-          ),
+          new PopupMenuButton<Choice>(
+            onSelected: onItemMenuPress,
+            itemBuilder: (BuildContext context) {
+              return choices.map((Choice choice) {
+                return PopupMenuItem<Choice>(
+                  value: choice,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        choice.icon,
+                        color: primaryColor,
+                      ),
+                      Container(
+                        width: 10.0,
+                      ),
+                      Text(
+                        choice.title,
+                        style: TextStyle(color: primaryColor),
+                      )
+                    ],
+                  ),
+                );
+              }).toList();
+            },
+          )
         ],
       ),
       body: _buildSuggestions(),
