@@ -70,17 +70,65 @@ class LoginScreenState extends State<LoginScreen> {
     GoogleSignInAccount googleUser = await googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    // print(googleAuth.accessToken);
+    FirebaseUser firebaseUser = await firebaseAuth.signInWithGoogle(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-    // GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    // FirebaseUser firebaseUser = await firebaseAuth.signInWithGoogle(
-    //   accessToken: googleAuth.accessToken,
-    //   idToken: googleAuth.idToken,
-    // );
+    print("firebaseAuth results: ");
+    print(firebaseUser);
 
-    // if (firebaseUser != null) {
+    if (firebaseUser != null) {
+      final QuerySnapshot results = await Firestore.instance
+        .collection('users')
+        .where('id', isEqualTo: firebaseUser.uid)
+        .getDocuments();
+      
+      final List<DocumentSnapshot> documents = results.documents;
 
-    // }
+      print("DocumentSnapshot documents: ");
+      print(documents);
+
+      if(documents.length == 0){
+        Firestore.instance
+          .collection('users')
+          .document(firebaseUser.uid)
+          .setData({
+            'id': firebaseUser.uid,
+            'nickname': firebaseUser.displayName,
+            'photoUrl': firebaseUser.photoUrl,
+          });
+
+          //Persist data to local storage
+          await sharedPreferences.setString('id', firebaseUser.uid);
+          await sharedPreferences.setString('displayName', firebaseUser.displayName);
+          await sharedPreferences.setString('photoUrl', firebaseUser.photoUrl);
+      }
+      else{
+          //Persist data to local storage
+          await sharedPreferences.setString('id', documents[0]['id']);
+          await sharedPreferences.setString('displayName', documents[0]['nickname']);
+          await sharedPreferences.setString('photoUrl', documents[0]['photoUrl']);
+      }
+
+      Fluttertoast.showToast(msg: "Sign in success");
+
+      this.setState(() {
+        isLoading = false;
+      });
+
+      var mainPageRoute = MaterialPageRoute(
+        builder: (context) => MyHomePage(currentUserId: sharedPreferences.getString('id'))
+      );
+
+      Navigator.push(context, mainPageRoute);
+    }
+    else {
+      Fluttertoast.showToast(msg: "Sign in fail");
+      this.setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
