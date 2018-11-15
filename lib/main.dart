@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'messageDetail.dart';
 import 'login.dart';
 import 'User.dart';
 import 'Choice.dart';
 import 'const.dart'; 
+import 'chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -73,11 +73,6 @@ class MyHomePageState extends State<MyHomePage>{
 
   @override
   Widget build(BuildContext context){
-    var snapshots = Firestore.instance.collection('users').snapshots();
-
-    print("build snapshots");
-    print(snapshots.toList());
-
     return Scaffold (
       appBar: AppBar(
         title: Text('Messages'),
@@ -109,7 +104,6 @@ class MyHomePageState extends State<MyHomePage>{
           )
         ],
       ),
-      // body: _buildSuggestions(),
       body: _userList(),
     );
   }
@@ -139,8 +133,6 @@ class MyHomePageState extends State<MyHomePage>{
             );
           } 
           else {
-            print("_user() snapshot");
-            print(snapshot);
             return _buildUser(snapshot);
           }
         },
@@ -159,12 +151,6 @@ class MyHomePageState extends State<MyHomePage>{
   }
 
   Widget _buildItem(context, DocumentSnapshot document){
-    print("currentUserId");
-    print(currentUserId);
-
-    print("document['id']");
-    print(document['id']);
-
     if(document['id'] == currentUserId) {
       return Container();
     }
@@ -173,7 +159,7 @@ class MyHomePageState extends State<MyHomePage>{
         child: FlatButton(
           child: Row(
             children: <Widget>[
-              Material(
+              new Material(
                 child: CachedNetworkImage(
                   placeholder: Container(
                     child: CircularProgressIndicator(
@@ -198,16 +184,16 @@ class MyHomePageState extends State<MyHomePage>{
                     children: <Widget>[
                       new Container(
                         child: Text(
-                          'Nickname: ${document['nickname']}',
-                          style: TextStyle(color: primaryColor),
+                          '${document['nickname']}',
+                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 16.0),
                         ),
                         alignment: Alignment.centerLeft,
                         margin: new EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                       ),
                       new Container(
                         child: Text(
-                          'About me: ${document['aboutMe'] ?? 'Not available'}',
-                          style: TextStyle(color: primaryColor),
+                          'Active 1h ago : 6h',
+                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.w100),
                         ),
                         alignment: Alignment.centerLeft,
                         margin: new EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -219,110 +205,23 @@ class MyHomePageState extends State<MyHomePage>{
               ),
             ],
           ),
-          onPressed: () {
-            Fluttertoast.showToast(msg: "Sign in success");
-          },
-          // onPressed: () { // To Message Detail
-          //   Navigator.push(
-          //       context,
-          //       new MaterialPageRoute(
-          //           builder: (context) => new Chat(
-          //                 peerId: document.documentID,
-          //                 peerAvatar: document['photoUrl'],
-          //               )));
+          // onPressed: () {
+          //   Fluttertoast.showToast(msg: "Sign in success");
           // },
-          color: greyColor2,
-          padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          onPressed: () { // To Message Detail
+            Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (context) => new Chat(
+                          peerId: document.documentID,
+                          peerAvatar: document['photoUrl'],
+                        )));
+          },
+          padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         ),
         margin: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
       );
     }
-  }
-
-  Widget _buildSuggestions(){
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
-      itemCount: _users.length,
-      itemBuilder: (context, i){
-        return _buildRow(_users[i]);
-      },
-    );
-  }
-
-  Widget _buildRow(User user){
-    final bool alreadySaved = _saved.contains(user.senderId);
-
-    return ListTile(
-      leading: new Icon(
-        Icons.person,
-      ),
-      title: Text(
-        user.senderName,
-        style: _biggerFont,
-      ),
-      trailing: new IconButton(
-        icon: new Icon(
-          alreadySaved ? Icons.favorite : Icons.favorite_border,
-          color: alreadySaved ? Colors.red : null 
-        ),
-        onPressed: () {
-          setState(() {
-            if(alreadySaved){
-              _saved.remove(user.senderId);
-            }
-            else{
-              _saved.add(user.senderId);
-            }
-          });
-        },
-      ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => MessageDetails(peerUser: user)
-          ),
-        );
-      },
-      onLongPress: () {
-        //Can do something else here such as showing a tooltips.
-      },
-      
-    );
-  }
-
-  void _newMessages(){
-    Navigator.of(context).push(
-      new MaterialPageRoute<void>(
-        builder: (BuildContext context){
-          final Iterable<ListTile> tiles = _saved.map(
-            (String senderName) {
-              return new ListTile(
-                title: new Text(
-                  senderName,
-                  style: _biggerFont,
-                ),
-              );
-            }
-          );
-          final List<Widget> divided = ListTile
-            .divideTiles(
-              context: context,
-              tiles: tiles
-            ).toList();
-
-          return new Scaffold(
-            appBar: new AppBar(
-              title: const Text('Saved suggestions'),
-            ),
-            body: new ListView(
-              children: divided
-            ),
-          );
-        }
-      )
-    );
   }
 }
 
