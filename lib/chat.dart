@@ -263,20 +263,97 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Widget buildItem(int index, DocumentSnapshot document) {
-    return Row(
-      children: <Widget>[
-        Container(
-          child: Text(
-            document['content'],
-            style: TextStyle(color: primaryColor),
-          ),
-          padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 200.0,
-          decoration: BoxDecoration(color: greyColor2, borderRadius: BorderRadius.circular(8.0)),
-          margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
-        )
-      ],
-    );
+    if(document["idFrom"] == id){ 
+      return Row(
+        children: <Widget>[
+          Container(
+            child: Text(
+              document['content'],
+              style: TextStyle(color: primaryColor),
+            ),
+            padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+            width: 200.0,
+            decoration: BoxDecoration(color: greyColor2, borderRadius: BorderRadius.circular(8.0)),
+            margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
+          )
+        ],
+        mainAxisAlignment: MainAxisAlignment.end,
+      );
+    }else{
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                isLastMessageLeft(index) 
+                  ? Material(
+                    child: CachedNetworkImage(
+                      placeholder: Container(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.0,
+                          valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+                        ),
+                        width: 35.0,
+                        height: 35.0,
+                        padding: EdgeInsets.all(10.0),
+                      ),
+                      imageUrl: peerAvatar,
+                      width: 35.0,
+                      height: 35.0,
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                    clipBehavior: Clip.hardEdge,
+                  )
+                  : Container(
+                    width: 35.0
+                  ),
+                  Container(
+                    child: Text(
+                        document['content'],
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                      width: 200.0,
+                      decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(8.0)),
+                      margin: EdgeInsets.only(left: 10.0),
+                  ),
+
+                  
+                  isLastMessageLeft(index)
+                  ? Container(
+                      child: Text(
+                        DateFormat('dd MMM kk:mm')
+                            .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp']))),
+                        style: TextStyle(color: greyColor, fontSize: 12.0, fontStyle: FontStyle.italic),
+                      ),
+                      margin: EdgeInsets.only(left: 50.0, top: 5.0, bottom: 5.0),
+                    )
+                  : Container()
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            
+          ],
+        ),
+        margin: EdgeInsets.only(bottom: 10),
+      );
+    }
   }
 
+  bool isLastMessageLeft(int index) {
+    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] == id) || index == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool isLastMessageRight(int index) {
+    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] != id) || index == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
